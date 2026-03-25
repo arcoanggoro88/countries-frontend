@@ -3,14 +3,11 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronDown,
-  Heart,
-  LogOut,
   MoonStar,
   Search,
   Sun,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
@@ -19,12 +16,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import DetailsDialog from "./components/DetailsDialog";
 import type { ICountryProps } from "../../types/country";
 import { useTheme } from "../../wrapper/themeProvider";
+import DetailsDialog from "./components/DetailsDialog";
 
 const DashboardComponent = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [countries, setCountries] = useState<ICountryProps[]>([]);
   const [searchCountry, setSearchCountry] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -32,19 +29,19 @@ const DashboardComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setTheme, theme } = useTheme();
 
-  const handleLogout = async () => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/logout",
-        {},
-        { withCredentials: true },
-      );
-      console.log(res.data);
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:8000/api/logout",
+  //       {},
+  //       { withCredentials: true },
+  //     );
+  //     console.log(res.data);
+  //     navigate("/");
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
