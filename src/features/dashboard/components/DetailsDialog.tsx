@@ -10,7 +10,6 @@ import type { ICountryProps } from "../../../types/country";
 import { ScrollArea } from "../../../components/ui/scroll-area";
 
 const DetailsDialog = ({ country }: { country: ICountryProps }) => {
-  console.log(country);
   return (
     <Dialog>
       <DialogTrigger asChild>
