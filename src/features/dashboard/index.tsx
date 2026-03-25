@@ -7,6 +7,7 @@ import {
   LogOut,
   MoonStar,
   Search,
+  Sun,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ import {
 } from "../../components/ui/dropdown-menu";
 import DetailsDialog from "./components/DetailsDialog";
 import type { ICountryProps } from "../../types/country";
+import { useTheme } from "../../wrapper/themeProvider";
 
 const DashboardComponent = () => {
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const DashboardComponent = () => {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const { setTheme, theme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -80,18 +83,43 @@ const DashboardComponent = () => {
     currentPage * itemsPerPage,
   );
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchCountry, selectedRegion]);
+
+  useEffect(() => {
+    if (currentPage > totalPage) {
+      setCurrentPage(1);
+    }
+  }, [totalPage]);
+
   return (
-    <section className="bg-gray-100 min-h-screen">
-      <nav className="bg-white/80 backdrop-blur-md h-14 w-full shadow-sm flex justify-between items-center px-6 sticky top-0 z-20">
-        <p className="font-bold text-lg tracking-tight">Where in the world?</p>
+    <section className="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
+      <nav className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md h-14 w-full shadow-sm flex justify-between items-center px-6 sticky top-0 z-20 border-b border-gray-200 dark:border-gray-700">
+        <p className="font-bold text-lg tracking-tight text-gray-900 dark:text-gray-100">
+          Where in the world?
+        </p>
 
         <div className="flex gap-3 md:gap-4 items-center">
-          <button className="flex items-center gap-2 text-gray-600 hover:text-black transition cursor-pointer">
-            <MoonStar className="size-4" />
-            <span className="hidden md:block text-sm">Dark Mode</span>
-          </button>
+          {theme === "dark" ? (
+            <button
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+              onClick={() => setTheme("light")}
+            >
+              <Sun className="size-4" />
+              <span className="hidden md:block text-sm">Light Mode</span>
+            </button>
+          ) : (
+            <button
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+              onClick={() => setTheme("dark")}
+            >
+              <MoonStar className="size-4" />
+              <span className="hidden md:block text-sm">Dark Mode</span>
+            </button>
+          )}
 
-          <button
+          {/* <button
             className="text-red-500 text-sm hover:text-red-600 transition cursor-pointer font-semibold"
             onClick={handleLogout}
           >
@@ -99,7 +127,7 @@ const DashboardComponent = () => {
             <div className="bg-red-400 p-1 rounded-full sm:hidden">
               <LogOut className="size-3 text-white" />
             </div>
-          </button>
+          </button> */}
         </div>
       </nav>
 
@@ -113,7 +141,7 @@ const DashboardComponent = () => {
               <Search className="absolute top-1/2 -translate-y-1/2 left-4 size-4 text-gray-400" />
               <input
                 placeholder="Search for a country..."
-                className="bg-white h-11 pl-11 pr-4 w-full rounded-lg shadow-sm border border-gray-200 focus:ring-2 focus:ring-gray-200 focus:outline-none text-sm transition"
+                className="bg-white dark:bg-gray-800 h-11 pl-11 pr-4 w-full rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 focus:outline-none text-sm transition text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 value={searchCountry}
                 onChange={(e) => setSearchCountry(e.target.value)}
               />
@@ -122,7 +150,7 @@ const DashboardComponent = () => {
           <div id="filter">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="h-11 px-5 bg-white text-gray-700 border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 rounded-lg cursor-pointer">
+                <Button className="h-11 px-5 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center gap-2 rounded-lg cursor-pointer">
                   {selectedRegion ? (
                     <span className="text-sm font-medium">
                       {selectedRegion}
@@ -139,13 +167,13 @@ const DashboardComponent = () => {
 
               <DropdownMenuContent
                 align="end"
-                className="w-44 p-2 rounded-xl shadow-lg border border-gray-100 bg-white"
+                className="w-44 p-2 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800"
               >
                 <DropdownMenuGroup className="space-y-1">
                   {uniqueRegion.map((region) => (
                     <DropdownMenuCheckboxItem
                       key={region}
-                      className="rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 transition cursor-pointer"
+                      className="rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       checked={selectedRegion === region}
                       onCheckedChange={() =>
                         setSelectedRegion(
@@ -170,7 +198,7 @@ const DashboardComponent = () => {
               currentItems.map((e, idx) => (
                 <div
                   key={idx}
-                  className="bg-white w-full max-w-72 rounded-xl overflow-hidden mx-auto shadow-sm  "
+                  className="bg-white dark:bg-gray-800 w-full max-w-72 rounded-xl overflow-hidden mx-auto shadow-sm border border-transparent dark:border-gray-700"
                 >
                   {/* Flag */}
                   <div className="h-36 sm:h-40 overflow-hidden relative">
@@ -178,39 +206,39 @@ const DashboardComponent = () => {
                       src={e.flags.svg}
                       className="w-full h-full object-cover brightness-95"
                     />
-                    <button className="z-10 absolute top-2 right-3    bg-red-400 rounded-xl p-2 flex items-center gap-1 text-white cursor-pointer shadow-md inset-shadow-2xs">
+                    {/* <button className="z-10 absolute top-2 right-3    bg-red-400 rounded-xl p-2 flex items-center gap-1 text-white cursor-pointer shadow-md inset-shadow-2xs">
                       <Heart className="size-4" />
                       <span className="text-sm font-semibold">
                         Add to Wishlist
                       </span>
-                    </button>
+                    </button> */}
                   </div>
 
                   {/* Content */}
                   <div className="p-4 flex flex-col justify-between h-37">
                     {/* Title */}
                     <div className="min-h-12">
-                      <p className="font-extrabold text-[15px] leading-snug line-clamp-2 text-gray-900">
+                      <p className="font-extrabold text-[15px] leading-snug line-clamp-2 text-gray-900 dark:text-gray-100">
                         {e.name.official}
                       </p>
                     </div>
 
                     {/* Info */}
-                    <div className="text-sm text-gray-600 space-y-1">
+                    <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
                       <p>
-                        <span className="font-semibold text-gray-800">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200">
                           Population:
                         </span>{" "}
                         {e.population.toLocaleString()}
                       </p>
                       <p>
-                        <span className="font-semibold text-gray-800">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200">
                           Region:
                         </span>{" "}
                         {e.region}
                       </p>
                       <p>
-                        <span className="font-semibold text-gray-800">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200">
                           Capital:
                         </span>{" "}
                         {e.capital}
@@ -267,49 +295,27 @@ const DashboardComponent = () => {
         </section>
 
         <section className="flex flex-col items-center gap-3 mt-6">
-          <div className="flex items-center gap-4 bg-white px-5 py-2 rounded-full shadow-sm border border-gray-200">
+          <div className="flex items-center gap-4 bg-white dark:bg-gray-800 px-5 py-2 rounded-full border dark:border-gray-700">
             <button
               disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition
-        ${
-          currentPage === 1
-            ? "text-gray-300 cursor-not-allowed"
-            : "text-gray-700 hover:bg-gray-100 active:scale-95"
-        }`}
+              onClick={() => setCurrentPage((p) => p - 1)}
+              className="disabled:text-gray-400"
             >
-              <ArrowLeft className="size-4" />
-              <span className="hidden sm:inline">Prev</span>
+              <ArrowLeft />
             </button>
 
-            <div className="h-5 w-px bg-gray-200" />
-
-            <span className="text-sm font-medium text-gray-700">
-              Page {currentPage} of {totalPage}
+            <span className="text-sm text-gray-700 dark:text-gray-200">
+              {currentPage} / {totalPage}
             </span>
-
-            <div className="h-5 w-px bg-gray-200" />
 
             <button
               disabled={currentPage === totalPage}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition
-        ${
-          currentPage === totalPage
-            ? "text-gray-300 cursor-not-allowed"
-            : "text-gray-700 hover:bg-gray-100 active:scale-95"
-        }`}
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className="disabled:text-gray-400"
             >
-              <span className="hidden sm:inline">Next</span>
-              <ArrowRight className="size-4" />
+              <ArrowRight />
             </button>
           </div>
-
-          <p className="text-sm text-gray-500">
-            Showing {(currentPage - 1) * itemsPerPage + 1}–
-            {Math.min(currentPage * itemsPerPage, filteredCountries.length)} of{" "}
-            {filteredCountries.length} countries
-          </p>
         </section>
       </main>
     </section>
