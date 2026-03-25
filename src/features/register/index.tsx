@@ -5,7 +5,7 @@ import { useRef } from "react";
 import axios from "axios";
 
 const RegisterComponent = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const inEmailRef = useRef<HTMLInputElement | null>(null);
   const inFullnameRef = useRef<HTMLInputElement | null>(null);
   const inPasswordRef = useRef<HTMLInputElement | null>(null);
@@ -25,6 +25,7 @@ const RegisterComponent = () => {
         password: password,
       });
       alert("Data berhasil disimpan");
+      navigate("/");
       console.log(res.data);
     } catch (err) {
       console.log(err);

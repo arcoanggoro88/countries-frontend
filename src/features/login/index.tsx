@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import AuthWrapper from "../../wrapper/authWrapper";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 
 const LoginComponent = () => {
   const navigate = useNavigate();
   const inEmailRef = useRef<HTMLInputElement | null>(null);
   const inPasswordRef = useRef<HTMLInputElement | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     const email = inEmailRef.current?.value;
@@ -15,11 +16,18 @@ const LoginComponent = () => {
     if (!email || !password) return alert("Required all fields");
 
     try {
-      const res = await axios.post("http://localhost:8000/api/login", {
-        email: email,
-        password: password,
-      });
+      const res = await axios.post(
+        "http://localhost:8000/api/login",
+        {
+          email: email,
+          password: password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
       console.log(res.data);
+      setIsSubmitting(true);
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
@@ -73,8 +81,9 @@ const LoginComponent = () => {
               type="button"
               className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg cursor-pointer"
               onClick={handleSubmit}
+              disabled={isSubmitting}
             >
-              Login
+              {isSubmitting ? "Loading" : "Login"}
             </Button>
           </form>
 
